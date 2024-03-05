@@ -1,10 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { isAuthTokenContext } from '../context/ContextShare';
 
 function Header({ dashboard }) {
+  const {isAuthToken, setIsAuthToken} = useContext(isAuthTokenContext)
+  const navigate = useNavigate()
   const isDashboard = dashboard ? true : false;
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("existinnguser");
+    setIsAuthToken(false)
+    navigate('/')
+  }
   return (
     <>
       <Navbar className="bg-success">
@@ -17,7 +26,8 @@ function Header({ dashboard }) {
           </Link>
           {
             isDashboard &&
-            <button className='btn btn-warning rounded'>logout</button>
+            <button className='btn btn-warning rounded'
+             onClick={handleLogout}>logout</button>
           }
 
         </Container>

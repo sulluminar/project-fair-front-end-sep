@@ -3,13 +3,23 @@ import { Col, Row } from 'react-bootstrap'
 import homeImage from '../assets/image2.png'
 import Projectcard from '../components/Projectcard'
 import { Link } from 'react-router-dom'
+import { homeProjectApi } from '../services/allAPI'
 
 function Home() {
+  const [homeProject, setHomeProject] = useState([])
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   useEffect(() => {
     if (sessionStorage.getItem("token")) {
       setIsLoggedIn(true)
     }
+  }, [])
+  const getHomeProject = async () => {
+    const result = await homeProjectApi();
+    console.log(result)
+    setHomeProject(result.data)
+  }
+  useEffect(() => {
+    getHomeProject();
   }, [])
   return (
     <>
@@ -45,15 +55,15 @@ function Home() {
           <h1>Explore My Projects</h1>
           <marquee scrollAmount={20}>
             <div className='d-flex mt-5 mb-5'>
-              <div className='ms-5' style={{ width: "400px" }} >
-                <Projectcard />
-              </div>
-              <div className='ms-5' style={{ width: "400px" }} >
-                <Projectcard />
-              </div>
-              <div className='ms-5' style={{ width: "400px" }}>
-                <Projectcard />
-              </div>
+              {
+                homeProject.length > 0 ?
+                  homeProject.map((item) => (
+                    <div className='ms-5' style={{ width: "400px" }} >
+                      <Projectcard project = {item}/>
+                    </div>
+                  )) :
+                  <p>No projects to load</p>
+              }
             </div>
           </marquee>
           <div className='text-center mt-5 mb-3'>

@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import authImage from '../assets/image1.png'
 import { Form } from 'react-bootstrap';
 import { loginAPI, registerAPI } from '../services/allAPI';
+import { isAuthTokenContext } from '../context/ContextShare';
 
 function Auth({ register }) {
+  const {isAuthToken, setIsAuthToken}  = useContext(isAuthTokenContext)
   const registerForm = register ? true : false;
   const navigate = useNavigate()
   const [userData, setUserData] = useState({
@@ -48,6 +50,7 @@ function Auth({ register }) {
         console.log(result)
         sessionStorage.setItem("existinnguser",JSON.stringify(result.data.existingUser));
         sessionStorage.setItem("token", result.data.token)
+        setIsAuthToken(true)
         alert("User logged in successfully")
         setUserData({
           username: "",
